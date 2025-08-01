@@ -30,7 +30,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          source: "my-html-app.tar,docker-compose.yml"
+          source: "my-html-app.tar"
           target: "/root/app_t"
 
       # 4. Load & run container on VPS
