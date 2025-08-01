@@ -30,11 +30,11 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          source: "my-html-app.tar"
+          source: "my-html-app.tar,docker-compose.yml"
           target: "/root/app_t"
 
       # 4. Load & run container on VPS
-      - name: Deploy to VPS
+      - name: Deploy with Docker Compose
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -42,7 +42,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
+            cd /root/app_t
             docker load < /root/app_t/my-html-app.tar
-            docker stop my-html-app || true
-            docker rm my-html-app || true
-            docker run -d --name my-html-app -p 1001:80 my-html-app:latest
+            docker-compose up -d
