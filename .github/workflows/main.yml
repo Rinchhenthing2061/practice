@@ -51,7 +51,7 @@ jobs:
                 username: ${{ secrets.SSH_USERNAME }}
                 key: ${{ secrets.SSH_PRIVATE_KEY }}
                 script: |
-                    cd /var/www/my-app
+                    cd /root/my-app
                     git pull origin main
                     npm install 
                     pm2 restart all
