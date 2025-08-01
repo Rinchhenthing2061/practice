@@ -1,0 +1,30 @@
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  run_pull:
+    name: Deploy to server
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Pull latest code on server
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
+            cd ${{ secrets.WORK_DIR }} &&
+            git fetch origin &&
+            git checkout ${{ secrets.MAIN_BRANCH }} &&
+            git reset --hard origin/${{ secrets.MAIN_BRANCH }}
+          "
+
+      - name: Cleanup
+        run: rm -rf ~/.ssh
